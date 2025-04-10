@@ -113,9 +113,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
                 <a href="job_opportunities.php" class="btn btn-outline-primary">
                     <i class="fas fa-arrow-left"></i> Back to Jobs
                 </a>
-                <a href="edit_job.php?id=<?php echo $job_id; ?>" class="btn btn-warning">
+                <!-- <a href="edit_job.php?id=<?php echo $job_id; ?>" class="btn btn-warning">
                     <i class="fas fa-edit"></i> Edit Job
-                </a>
+                </a> -->
             </div>
         </div>
         
