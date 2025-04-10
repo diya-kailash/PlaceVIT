@@ -1,0 +1,237 @@
+/* Main CSS file for Placement and Registration Website for CDC VIT */
+:root {
+    --primary-color: #0056b3;
+    --secondary-color: #003366;
+    --accent-color: #ffc107;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--dark-color);
+}
+
+.btn-accent:hover {
+    background-color: #e6ac00;
+    border-color: #e6ac00;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+}
+
+.footer {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+/* Dashboard specific styles */
+.dashboard-container {
+    padding: 20px;
+}
+
+.dashboard-card {
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.dashboard-stats {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Table styles */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,86,179,0.05);
+}
+
+/* Status badges */
+.badge-applied {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-shortlisted {
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+}
+
+.badge-selected {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Job card */
+.job-card {
+    border-left: 4px solid var(--primary-color);
+}
+
+.job-company {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.job-role {
+    color: var(--primary-color);
+}
+
+.job-deadline {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Login and Registration Pages */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px);
+    padding: 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-tabs .nav-link {
+    color: var(--dark-color) !important;
+}
+
+.auth-tabs .nav-link.active {
+    background-color: var(--primary-color);
+    color: white !important;
+}
+
+/* Profile section */
+.profile-header {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-img {
+    border: 3px solid var(--primary-color);
+}
+
+/* Form validation */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + .75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+.was-validated .form-control:valid {
+    border-color: #28a745;
+    padding-right: calc(1.5em + .75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+
+/* Utility classes */
+.bg-light-blue {
+    background-color: #e6f2ff;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-accent {
+    color: var(--accent-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-accent {
+    border-color: var(--accent-color) !important;
+}
