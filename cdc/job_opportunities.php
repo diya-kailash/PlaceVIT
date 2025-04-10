@@ -19,13 +19,18 @@ if (isset($_POST['delete_job']) && isset($_POST['job_id'])) {
     $stmt->bind_param("ii", $job_id, $cdc_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
+      if ($result->num_rows > 0) {
         // Get job details to delete related file
         $job = $result->fetch_assoc();
         $jd_path = $job['job_description_path'];
         
-        // Delete job from database
+        // First delete all applications associated with this job
+        $delete_applications_query = "DELETE FROM applications WHERE job_id = ?";
+        $stmt = $conn->prepare($delete_applications_query);
+        $stmt->bind_param("i", $job_id);
+        $stmt->execute();
+        
+        // Then delete job from database
         $delete_query = "DELETE FROM job_opportunities WHERE id = ?";
         $stmt = $conn->prepare($delete_query);
         $stmt->bind_param("i", $job_id);
@@ -181,33 +186,7 @@ $jobs_result = $stmt->get_result();
                                                 </a>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal<?php echo $job['id']; ?>" title="Delete">
                                                     <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <!-- Delete Confirmation Modal -->
-                                            <div class="modal fade" id="deleteModal<?php echo $job['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel<?php echo $job['id']; ?>" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="deleteModalLabel<?php echo $job['id']; ?>">Confirm Delete</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to delete the job opportunity for <?php echo htmlspecialchars($job['company_name']); ?> - <?php echo htmlspecialchars($job['role']); ?>?</p>
-                                                            <p class="text-danger">This action cannot be undone and will also delete all associated applications.</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                            <form method="post" action="job_opportunities.php">
-                                                                <input type="hidden" name="job_id" value="<?php echo $job['id']; ?>">
-                                                                <button type="submit" name="delete_job" class="btn btn-danger">Delete</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                </button>                                            </div>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
@@ -224,7 +203,37 @@ $jobs_result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer -->    <!-- Delete Confirmation Modals -->
+    <?php 
+    // Reset the results pointer to beginning
+    $jobs_result->data_seek(0);
+    while ($job = $jobs_result->fetch_assoc()): 
+    ?>
+    <div class="modal fade" id="deleteModal<?php echo $job['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel<?php echo $job['id']; ?>" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel<?php echo $job['id']; ?>">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the job opportunity for <?php echo htmlspecialchars($job['company_name']); ?> - <?php echo htmlspecialchars($job['role']); ?>?</p>
+                    <p class="text-danger">This action cannot be undone and will also delete all associated applications.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form method="post" action="job_opportunities.php">
+                        <input type="hidden" name="job_id" value="<?php echo $job['id']; ?>">
+                        <button type="submit" name="delete_job" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endwhile; ?>
+
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
