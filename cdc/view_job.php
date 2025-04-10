@@ -372,7 +372,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
             var encodedUri = encodeURI(csvContent);
             var link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "<?php echo preg_replace('/[^a-zA-Z0-9]/', '_', $job['company_name'] . '_' . $job['role']); ?>_applications.csv");
+            link.setAttribute("download", "<?php echo preg_replace('/[^a-zA-Z0-9]/', '', $job['company_name'] . '' . $job['role']); ?>_applications.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
