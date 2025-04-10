@@ -17,7 +17,9 @@ $result = $stmt->get_result();
 $student = $result->fetch_assoc();
 
 // Check if profile is complete
-if (!$student['dob'] || !$student['college'] || !$student['degree'] || !$student['branch'] || !$student['cgpa']) {
+if (empty($student['dob']) || empty($student['college']) || 
+    empty($student['degree']) || empty($student['branch']) || 
+    $student['branch'] === '0' || empty($student['cgpa'])) {
     header("Location: complete_profile.php");
     exit();
 }
