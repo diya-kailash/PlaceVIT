@@ -19,7 +19,7 @@ require_once 'includes/config.php';
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.php">VIT Placement Portal</a>
+            <a class="navbar-brand" href="index.php">placeVIT</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -54,7 +54,7 @@ require_once 'includes/config.php';
                     </div>
                 </div>
                 <div class="col-md-6 d-flex justify-content-center align-items-center">
-                    <img src="assets/images/placement.svg" alt="Placement Illustration" class="img-fluid" style="max-height: 300px;">
+                    <img src="assets\job-interview-conversation_74855-7566.avif" alt="Placement Illustration" class="img-fluid" style="max-height: 300px;">
                 </div>
             </div>
         </div>
