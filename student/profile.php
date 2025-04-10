@@ -76,9 +76,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
             }
         }
     }
-    
-    // If no errors, update profile
+      // If no errors, update profile
     if (empty($error)) {
+        // Clean and validate branch data
+        $branch = trim($_POST['branch']);
+        if (empty($branch)) {
+            $error .= "Branch cannot be empty.<br>";
+        }
+        
         $update_query = "UPDATE students SET 
                         name = ?,
                         dob = ?, 
@@ -92,8 +97,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
                         marks_10th = ?, 
                         resume_path = ? 
                         WHERE id = ?";
-          $stmt = $conn->prepare($update_query);
-        $stmt->bind_param("ssissisdddsi", $name, $dob, $age, $hometown, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
+          
+        // Debug the branch value before SQL execution  
+        error_log("Profile - Branch value: '" . $branch . "', type: " . gettype($branch));
+            $stmt = $conn->prepare($update_query);
+        // Fix: Use proper type bindings - ensuring branch is treated as a string
+        $stmt->bind_param("ssissssiddss", $name, $dob, $age, $hometown, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
         
         if ($stmt->execute()) {
             $success = "Profile updated successfully!";
