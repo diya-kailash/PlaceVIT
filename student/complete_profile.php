@@ -16,6 +16,14 @@ $stmt->execute();
 $result = $stmt->get_result();
 $student = $result->fetch_assoc();
 
+// Check if profile is already complete, if so redirect to dashboard
+if (!empty($student['dob']) && !empty($student['college']) && 
+    !empty($student['degree']) && !empty($student['branch']) && 
+    $student['branch'] !== '0' && !empty($student['cgpa'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
 // Debug the retrieved branch value
 error_log("Retrieved branch value: " . (isset($student['branch']) ? $student['branch'] : 'not set'));
 
@@ -84,17 +92,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // If no errors, update profile
     if (empty($error)) {
-        // Debug the branch value and print data types
-        error_log("Branch value before update: '" . $branch . "' (Type: " . gettype($branch) . ")");
-        
-        // Force branch to be a string type and ensure it's not empty
-        $branch = (string)$branch;
-        if (empty($branch) || $branch === '0') {
-            $branch = $_POST['branch']; // Get directly from POST
+        // Debug the branch value and print data types        // Clean and validate branch data
+        $branch = trim($_POST['branch']);
+        if (empty($branch)) {
+            $error .= "Branch cannot be empty.<br>";
         }
-        error_log("Branch value after type conversion: '" . $branch . "' (Type: " . gettype($branch) . ")");
-        
-        $update_query = "UPDATE students SET 
+          $update_query = "UPDATE students SET
                         dob = ?, 
                         age = ?, 
                         hometown = ?, 
@@ -106,19 +109,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         marks_12th = ?, 
                         marks_10th = ?, 
                         resume_path = ? 
-                        WHERE id = ?";        $stmt = $conn->prepare($update_query);
-        $stmt->bind_param("sisssisdddsi", $dob, $age, $hometown, $college, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
+                        WHERE id = ?";
         
-        $success = $stmt->execute();
+        // Debug the SQL and values before execution
+        error_log("Branch value: '" . $branch . "', type: " . gettype($branch));
+        
+        $stmt = $conn->prepare($update_query);
+        // Fix: Use proper type bindings - ensuring branch is treated as a string
+        $stmt->bind_param("sisssssiddss", $dob, $age, $hometown, $college, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
+          $success = $stmt->execute();
         error_log("SQL execution result: " . ($success ? "Success" : "Failed with error: " . $stmt->error));
         
         if ($success) {
             // Profile updated successfully, redirect to dashboard
             error_log("Redirecting to dashboard.php");
-            // Make sure to clear any buffered output before redirect
-            ob_clean();
+            // Update session variable if needed
+            $_SESSION['student_name'] = $student['name'] ?? $_SESSION['student_name'];
+            
+            // Make sure to end any output buffering
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+            
+            // Redirect to dashboard
             header("Location: dashboard.php");
-            exit();        } else {
+            exit();
+        } else {
             $error = "Error updating profile: " . $stmt->error;
         }
     }
@@ -237,12 +253,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group">                                        <label for="branch">Branch</label>
-                                        <input type="text" class="form-control" id="branch" name="branch" placeholder="e.g., Computer Science, Electronics" value="<?php echo isset($student['branch']) && $student['branch'] !== '0' ? htmlspecialchars($student['branch']) : ''; ?>" required>
+                                    <div class="form-group">                                        <label for="branch">Branch</label>                                        <input type="text" class="form-control" id="branch" name="branch" placeholder="e.g., Computer Science, Electronics" value="<?php echo !empty($student['branch']) ? htmlspecialchars($student['branch']) : ''; ?>" required>
                                         <div class="invalid-feedback">
                                             Please provide your branch.
                                         </div>
-                                        <?php error_log("Form display branch value: " . (isset($student['branch']) ? $student['branch'] : 'not set')); ?>
                                     </div>
                                 </div>
                             </div>
