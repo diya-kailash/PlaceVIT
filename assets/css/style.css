@@ -1,4 +1,7 @@
 /* Main CSS file for Placement and Registration Website for CDC VIT */
+/* Import Google Fonts - Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 :root {
     --primary-color: #0056b3;
     --secondary-color: #003366;
@@ -8,7 +11,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f4f7fc;
     color: #333;
     margin: 0;
@@ -16,21 +19,27 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    line-height: 1.6;
 }
 
 .navbar {
     background-color: var(--primary-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 15px 0;
 }
 
 .navbar-brand {
     font-weight: bold;
     color: white !important;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
 }
 
 .nav-link {
     color: rgba(255,255,255,0.9) !important;
     transition: all 0.3s ease;
+    margin: 0 5px;
+    padding: 8px 15px !important;
 }
 
 .nav-link:hover {
@@ -40,11 +49,16 @@ body {
 .btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
+    padding: 10px 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .btn-primary:hover {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .btn-accent {
@@ -59,9 +73,11 @@ body {
 }
 
 .card {
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    margin-bottom: 20px;
+    padding: 10px;
 }
 
 .card:hover {
@@ -72,6 +88,7 @@ body {
     background-color: var(--primary-color);
     color: white;
     border-radius: 8px 8px 0 0 !important;
+    padding: 16px 20px;
 }
 
 .form-control:focus {
@@ -82,8 +99,28 @@ body {
 .footer {
     background-color: var(--secondary-color);
     color: white;
-    padding: 20px 0;
+    padding: 30px 0;
     margin-top: auto;
+}
+
+/* Hero section enhancements */
+.jumbotron {
+    padding: 80px 0;
+    margin-bottom: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.jumbotron h1 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+}
+
+.jumbotron .lead {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    line-height: 1.8;
 }
 
 /* Dashboard specific styles */
@@ -234,4 +271,27 @@ body {
 
 .border-accent {
     border-color: var(--accent-color) !important;
+}
+
+/* Section styling */
+section {
+    padding: 80px 0;
+}
+
+section h2 {
+    font-weight: 700;
+    margin-bottom: 50px;
+    position: relative;
+    text-align: center;
+}
+
+section h2:after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: var(--primary-color);
 }
