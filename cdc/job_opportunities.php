@@ -163,9 +163,8 @@ $jobs_result = $stmt->get_result();
                                         <td><?php echo htmlspecialchars($job['company_name']); ?></td>
                                         <td><?php echo htmlspecialchars($job['role']); ?></td>
                                         <td><?php echo htmlspecialchars($job['ctc']); ?></td>
-                                        <td><?php echo date("d M Y, h:i A", strtotime($job['deadline'])); ?></td>
-                                        <td>
-                                            <a href="view_applications.php?job_id=<?php echo $job['id']; ?>" class="badge badge-primary">
+                                        <td><?php echo date("d M Y, h:i A", strtotime($job['deadline'])); ?></td>                                        <td>
+                                            <a href="applications.php?job_id=<?php echo $job['id']; ?>" class="badge badge-primary">
                                                 <?php echo $app_count; ?> Applications
                                             </a>
                                         </td>
