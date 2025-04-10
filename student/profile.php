@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
         error_log("Profile - Branch value: '" . $branch . "', type: " . gettype($branch));
             $stmt = $conn->prepare($update_query);
         // Fix: Use proper type bindings - ensuring branch is treated as a string
-        $stmt->bind_param("ssissssiddss", $name, $dob, $age, $hometown, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
+        $stmt->bind_param("ssissssdddss", $name, $dob, $age, $hometown, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
         
         if ($stmt->execute()) {
             $success = "Profile updated successfully!";

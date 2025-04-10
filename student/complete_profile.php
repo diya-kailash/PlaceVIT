@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         $stmt = $conn->prepare($update_query);
         // Fix: Use proper type bindings - ensuring branch is treated as a string
-        $stmt->bind_param("sisssssiddss", $dob, $age, $hometown, $college, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
+        $stmt->bind_param("sisssssdddss", $dob, $age, $hometown, $college, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
           $success = $stmt->execute();
         error_log("SQL execution result: " . ($success ? "Success" : "Failed with error: " . $stmt->error));
         
