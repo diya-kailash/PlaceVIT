@@ -202,12 +202,12 @@ $jobs_result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Footer -->    <!-- Delete Confirmation Modals -->
     <?php 
     // Reset the results pointer to beginning
     $jobs_result->data_seek(0);
     while ($job = $jobs_result->fetch_assoc()): 
     ?>
+    <!-- Delete Confirmation Modals -->
     <div class="modal fade" id="deleteModal<?php echo $job['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel<?php echo $job['id']; ?>" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -233,6 +233,7 @@ $jobs_result = $stmt->get_result();
     </div>
     <?php endwhile; ?>
 
+    <!-- Footer -->    
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
