@@ -8,12 +8,11 @@ if (!isset($_SESSION['cdc_id']) || $_SESSION['user_type'] !== 'cdc') {
     exit();
 }
 
-// Check if job ID is provided
+
 if (!isset($_GET['id'])) {
     header("Location: job_opportunities.php");
     exit();
 }
-
 $job_id = intval($_GET['id']);
 $cdc_id = $_SESSION['cdc_id'];
 
@@ -30,11 +29,7 @@ if ($result->num_rows == 0) {
 }
 
 $job = $result->fetch_assoc();
-
-// Get job applications
 $applications = get_job_applications($conn, $job_id);
-
-// Get application statistics
 $stats = get_job_statistics($conn, $job_id);
 
 // Handle bulk status update
@@ -43,10 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
     $new_status = mysqli_real_escape_string($conn, $_POST['new_status']);
     
     if (!empty($application_ids)) {
-        // Convert array of IDs to comma-separated string for the query
         $ids_string = implode(',', array_map('intval', $application_ids));
-        
-        // Update applications
         $update_query = "UPDATE applications SET status = ? WHERE id IN ($ids_string) AND job_id = ?";
         $stmt = $conn->prepare($update_query);
         $stmt->bind_param("si", $new_status, $job_id);
@@ -75,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -308,25 +299,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Select all checkbox functionality
             $('#selectAll').change(function() {
                 $('.application-checkbox').prop('checked', $(this).prop('checked'));
             });
-            
-            // Update select all checkbox if all individual checkboxes are checked
             $('.application-checkbox').change(function() {
                 if ($('.application-checkbox:checked').length == $('.application-checkbox').length) {
                     $('#selectAll').prop('checked', true);
@@ -359,8 +344,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status']) && is
             for (var i = 0; i < rows.length; i++) {
                 var row = [], cols = rows[i].querySelectorAll("td, th");
                 
-                for (var j = 1; j < cols.length - 1; j++) { // Skip checkbox column and actions column
-                    // Get the text content, removing any HTML elements
+                for (var j = 1; j < cols.length - 1; j++) { 
                     var cellContent = cols[j].innerText.trim();
                     row.push('"' + cellContent.replace(/"/g, '""') + '"');
                 }

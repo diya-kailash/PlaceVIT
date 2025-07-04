@@ -7,12 +7,11 @@ if (!isset($_SESSION['cdc_id']) || $_SESSION['user_type'] !== 'cdc') {
     exit();
 }
 
-// Check if student ID is provided
+
 if (!isset($_GET['id'])) {
     header("Location: applications.php");
     exit();
 }
-
 $student_id = intval($_GET['id']);
 
 // Get student details
@@ -52,7 +51,6 @@ $applications_result = $stmt->get_result();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -283,14 +281,11 @@ $applications_result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>

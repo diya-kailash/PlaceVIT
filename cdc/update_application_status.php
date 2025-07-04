@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['application_id']) && i
     $student_id = intval($_POST['student_id']);
     $cdc_id = $_SESSION['cdc_id'];
     
-    // Validate status
     $valid_statuses = ['applied', 'shortlisted', 'selected', 'rejected'];
     if (!in_array($status, $valid_statuses)) {
         $_SESSION['error'] = "Invalid status value.";
@@ -46,11 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['application_id']) && i
         $_SESSION['error'] = "You don't have permission to update this application.";
     }
     
-    // Redirect back to student profile
     header("Location: view_student.php?id=" . $student_id);
     exit();
 } else {
-    // If not a valid form submission, redirect to dashboard
     header("Location: dashboard.php");
     exit();
 }
