@@ -1,14 +1,10 @@
 <?php
 require_once '../includes/config.php';
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate input
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
     $error = "";
-
-    // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
@@ -21,17 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows == 1) {
             $staff = $result->fetch_assoc();
-            
-            // Verify password
             if (password_verify($password, $staff['password'])) {
-                // Password is correct, start a session
                 $_SESSION['cdc_id'] = $staff['id'];
                 $_SESSION['cdc_name'] = $staff['name'];
                 $_SESSION['cdc_email'] = $staff['email'];
                 $_SESSION['cdc_designation'] = $staff['designation'];
                 $_SESSION['user_type'] = 'cdc';
-                
-                // Redirect to dashboard
                 header("Location: dashboard.php");
                 exit();
             } else {
@@ -55,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -77,8 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </nav>
-
-    <!-- Login Form -->
     <div class="auth-wrapper">
         <div class="auth-card card">
             <div class="card-header">
@@ -119,14 +107,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
