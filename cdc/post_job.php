@@ -12,17 +12,13 @@ $success = $error = '';
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate and sanitize input
     $company_name = mysqli_real_escape_string($conn, $_POST['company_name']);
     $role = mysqli_real_escape_string($conn, $_POST['role']);
     $ctc = mysqli_real_escape_string($conn, $_POST['ctc']);
     $deadline = mysqli_real_escape_string($conn, $_POST['deadline']);
-    
-    // Validate required fields
     if (empty($company_name) || empty($role) || empty($ctc) || empty($deadline)) {
         $error = "All fields are required.";
     } else {
-        // Handle job description file upload
         $jd_path = null;
         
         if (isset($_FILES['job_description']) && $_FILES['job_description']['error'] == 0) {
@@ -34,13 +30,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (!in_array($file_ext, $allowed_ext)) {
                 $error = "Job description must be in PDF, DOC, or DOCX format.";
-            } elseif ($file_size > 5242880) { // 5MB max
+            } elseif ($file_size > 5242880) { 
                 $error = "Job description file size must be less than 5MB.";
             } else {
                 $new_file_name = "jd_" . preg_replace('/\s+/', '_', $company_name) . "_" . time() . "." . $file_ext;
                 $upload_path = "../uploads/job_descriptions/";
-                
-                // Create directory if it doesn't exist
                 if (!file_exists($upload_path)) {
                     mkdir($upload_path, 0777, true);
                 }
@@ -81,7 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -183,14 +176,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
@@ -199,9 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     (function() {
         'use strict';
         window.addEventListener('load', function() {
-            // Fetch all forms we want to apply validation to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
