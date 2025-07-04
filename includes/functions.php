@@ -1,9 +1,5 @@
 <?php
 /**
- * Helper functions for VIT Placement Portal
- */
-
-/**
  * Format date in a readable format
  * 
  * @param string $date Date string
