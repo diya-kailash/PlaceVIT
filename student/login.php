@@ -1,18 +1,13 @@
 <?php
 require_once '../includes/config.php';
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate input
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
     $error = "";
-
-    // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
-        // Check if the user exists
         $query = "SELECT * FROM students WHERE email = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $email);
@@ -21,17 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows == 1) {
             $student = $result->fetch_assoc();
-            
-            // Verify password
             if (password_verify($password, $student['password'])) {
-                // Password is correct, start a session
                 $_SESSION['student_id'] = $student['id'];
                 $_SESSION['student_name'] = $student['name'];
                 $_SESSION['student_email'] = $student['email'];
                 $_SESSION['student_registration'] = $student['registration_number'];
                 $_SESSION['user_type'] = 'student';
-                
-                // Check if profile is complete
                 if (!$student['dob'] || !$student['college'] || !$student['degree'] || !$student['branch'] || !$student['cgpa']) {
                     // Profile is incomplete, redirect to complete profile page
                     header("Location: complete_profile.php");
@@ -62,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -85,7 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </nav>
 
-    <!-- Login Form -->
     <div class="auth-wrapper">
         <div class="auth-card card">
             <div class="card-header">
@@ -126,14 +114,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
