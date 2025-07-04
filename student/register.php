@@ -3,35 +3,25 @@ require_once '../includes/config.php';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate input
     $registration_number = mysqli_real_escape_string($conn, $_POST['registration_number']);
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $error = "";    
-    
-    // Validate registration number
     if (!preg_match('/^\d{2}[A-Z]{3}\d{4}$/', $registration_number)) {
         $error .= "Invalid registration number format. It should match the VIT format (e.g., 21BIT0001).<br>";
     }
-
-    // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/@(vit\.ac\.in|vitstudent\.ac\.in)$/', $email)) {
         $error .= "Invalid email format. Please use your VIT email address.<br>";
     }
-
-    // Check if passwords match
     if ($password != $confirm_password) {
         $error .= "Passwords do not match.<br>";
     }
-
-    // Validate password strength
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
         $error .= "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.<br>";
     }
 
-    // Check if registration number or email already exists
     $check_query = "SELECT * FROM students WHERE registration_number = ? OR email = ?";
     $stmt = $conn->prepare($check_query);
     $stmt->bind_param("ss", $registration_number, $email);
@@ -44,10 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // If no errors, proceed with registration
     if (empty($error)) {
-        // Hash password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        // Insert user data into database
         $insert_query = "INSERT INTO students (registration_number, name, email, password) 
                         VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($insert_query);
@@ -75,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -98,7 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </nav>
 
-    <!-- Registration Form -->
     <div class="auth-wrapper">
         <div class="auth-card card">
             <div class="card-header">
@@ -165,14 +150,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
@@ -181,9 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     (function() {
         'use strict';
         window.addEventListener('load', function() {
-            // Fetch all forms we want to apply validation to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
@@ -193,8 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     form.classList.add('was-validated');
                 }, false);
             });
-            
-            // Check if password and confirm password match
+
             var password = document.getElementById("password");
             var confirm_password = document.getElementById("confirm_password");
             

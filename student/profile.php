@@ -6,8 +6,6 @@ if (!isset($_SESSION['student_id']) || $_SESSION['user_type'] !== 'student') {
     header("Location: login.php");
     exit();
 }
-
-// Get student data
 $student_id = $_SESSION['student_id'];
 $query = "SELECT * FROM students WHERE id = ?";
 $stmt = $conn->prepare($query);
@@ -18,7 +16,6 @@ $student = $result->fetch_assoc();
 
 // Check if the form is submitted for profile update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
-    // Validate and sanitize input
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $dob = mysqli_real_escape_string($conn, $_POST['dob']);
     $age = isset($_POST['age']) ? intval($_POST['age']) : null;
@@ -31,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     $marks_10th = isset($_POST['marks_10th']) ? floatval($_POST['marks_10th']) : null;
     $error = "";
     
-    // Validation checks
     if ($cgpa < 0 || $cgpa > 10) {
         $error .= "CGPA must be between 0 and 10.<br>";
     }
@@ -43,9 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     if ($marks_10th < 0 || $marks_10th > 100) {
         $error .= "10th marks must be between 0 and 100.<br>";
     }
-    
-    // Handle resume upload
-    $resume_path = $student['resume_path']; // Keep existing resume path by default
+
+    $resume_path = $student['resume_path']; 
     
     if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
         $allowed_ext = ['pdf', 'doc', 'docx'];
@@ -56,13 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
         
         if (!in_array($file_ext, $allowed_ext)) {
             $error .= "Resume must be in PDF, DOC, or DOCX format.<br>";
-        } elseif ($file_size > 2097152) { // 2MB max
+        } elseif ($file_size > 2097152) { 
             $error .= "Resume file size must be less than 2MB.<br>";
         } else {
             $new_file_name = "resume_" . $_SESSION['student_registration'] . "_" . time() . "." . $file_ext;
             $upload_path = "../uploads/resumes/";
-            
-            // Create directory if it doesn't exist
             if (!file_exists($upload_path)) {
                 mkdir($upload_path, 0777, true);
             }
@@ -70,7 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
             $resume_path = $upload_path . $new_file_name;
             
             if (move_uploaded_file($file_tmp, $resume_path)) {
-                // Resume uploaded successfully
             } else {
                 $error .= "Failed to upload resume. Please try again.<br>";
             }
@@ -78,12 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     }
       // If no errors, update profile
     if (empty($error)) {
-        // Clean and validate branch data
         $branch = trim($_POST['branch']);
         if (empty($branch)) {
             $error .= "Branch cannot be empty.<br>";
         }
-        
         $update_query = "UPDATE students SET 
                         name = ?,
                         dob = ?, 
@@ -98,18 +88,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
                         resume_path = ? 
                         WHERE id = ?";
           
-        // Debug the branch value before SQL execution  
         error_log("Profile - Branch value: '" . $branch . "', type: " . gettype($branch));
             $stmt = $conn->prepare($update_query);
-        // Fix: Use proper type bindings - ensuring branch is treated as a string
         $stmt->bind_param("ssissssdddss", $name, $dob, $age, $hometown, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
         
         if ($stmt->execute()) {
             $success = "Profile updated successfully!";
-            // Update session variables
             $_SESSION['student_name'] = $name;
-            
-            // Refresh student data
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $student_id);
             $stmt->execute();
@@ -133,7 +118,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -352,14 +336,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
@@ -368,9 +349,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     (function() {
         'use strict';
         window.addEventListener('load', function() {
-            // Fetch all forms we want to apply validation to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
@@ -380,8 +359,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
                     form.classList.add('was-validated');
                 }, false);
             });
-            
-            // Calculate age automatically based on DOB
             var dobInput = document.getElementById('dob');
             var ageInput = document.getElementById('age');
             
