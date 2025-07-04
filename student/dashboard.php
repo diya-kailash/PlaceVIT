@@ -6,8 +6,6 @@ if (!isset($_SESSION['student_id']) || $_SESSION['user_type'] !== 'student') {
     header("Location: login.php");
     exit();
 }
-
-// Get student data
 $student_id = $_SESSION['student_id'];
 $query = "SELECT * FROM students WHERE id = ?";
 $stmt = $conn->prepare($query);
@@ -27,8 +25,6 @@ if (empty($student['dob']) || empty($student['college']) ||
 // Handle job application
 if (isset($_POST['apply_job']) && isset($_POST['job_id'])) {
     $job_id = intval($_POST['job_id']);
-    
-    // Check if already applied
     $check_query = "SELECT * FROM applications WHERE student_id = ? AND job_id = ?";
     $stmt = $conn->prepare($check_query);
     $stmt->bind_param("ii", $student_id, $job_id);
@@ -38,7 +34,6 @@ if (isset($_POST['apply_job']) && isset($_POST['job_id'])) {
     if ($result->num_rows > 0) {
         $application_error = "You have already applied for this job.";
     } else {
-        // Insert application
         $apply_query = "INSERT INTO applications (student_id, job_id, status) VALUES (?, ?, 'applied')";
         $stmt = $conn->prepare($apply_query);
         $stmt->bind_param("ii", $student_id, $job_id);
@@ -55,7 +50,6 @@ if (isset($_POST['apply_job']) && isset($_POST['job_id'])) {
 $jobs_query = "SELECT * FROM job_opportunities WHERE deadline >= NOW() ORDER BY created_at DESC";
 $jobs_result = $conn->query($jobs_query);
 
-// Get student's applied jobs
 $applied_jobs_query = "SELECT a.*, j.company_name, j.role, j.ctc, j.deadline
                       FROM applications a 
                       INNER JOIN job_opportunities j ON a.job_id = j.id
@@ -78,7 +72,6 @@ $applied_jobs_result = $stmt->get_result();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">VIT Placement Portal</a>
@@ -203,7 +196,6 @@ $applied_jobs_result = $stmt->get_result();
                         <?php if ($jobs_result->num_rows > 0): ?>
                             <div class="row">
                                 <?php while ($job = $jobs_result->fetch_assoc()): 
-                                    // Check if already applied
                                     $check_query = "SELECT * FROM applications WHERE student_id = ? AND job_id = ?";
                                     $stmt = $conn->prepare($check_query);
                                     $stmt->bind_param("ii", $student_id, $job['id']);
@@ -251,14 +243,11 @@ $applied_jobs_result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>

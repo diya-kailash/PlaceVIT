@@ -6,8 +6,6 @@ if (!isset($_SESSION['student_id'])) {
     header("Location: login.php");
     exit();
 }
-
-// Get student data
 $student_id = $_SESSION['student_id'];
 $query = "SELECT * FROM students WHERE id = ?";
 $stmt = $conn->prepare($query);
@@ -23,13 +21,10 @@ if (!empty($student['dob']) && !empty($student['college']) &&
     header("Location: dashboard.php");
     exit();
 }
-
-// Debug the retrieved branch value
 error_log("Retrieved branch value: " . (isset($student['branch']) ? $student['branch'] : 'not set'));
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate and sanitize input
     $dob = mysqli_real_escape_string($conn, $_POST['dob']);
     $age = isset($_POST['age']) ? intval($_POST['age']) : null;
     $hometown = mysqli_real_escape_string($conn, $_POST['hometown']);
@@ -42,24 +37,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $marks_10th = isset($_POST['marks_10th']) ? floatval($_POST['marks_10th']) : null;
     $error = "";
     
-    // Validate CGPA
     if ($cgpa < 0 || $cgpa > 10) {
         $error .= "CGPA must be between 0 and 10.<br>";
     }
-    
-    // Validate 12th marks
     if ($marks_12th < 0 || $marks_12th > 100) {
         $error .= "12th marks must be between 0 and 100.<br>";
     }
-    
-    // Validate 10th marks
     if ($marks_10th < 0 || $marks_10th > 100) {
         $error .= "10th marks must be between 0 and 100.<br>";
     }
     
     // Handle resume upload
-    $resume_path = $student['resume_path']; // Keep existing resume path by default
-    
+    $resume_path = $student['resume_path']; 
     if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
         $allowed_ext = ['pdf', 'doc', 'docx'];
         $file_name = $_FILES['resume']['name'];
@@ -69,21 +58,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (!in_array($file_ext, $allowed_ext)) {
             $error .= "Resume must be in PDF, DOC, or DOCX format.<br>";
-        } elseif ($file_size > 2097152) { // 2MB max
+        } elseif ($file_size > 2097152) { 
             $error .= "Resume file size must be less than 2MB.<br>";
         } else {
             $new_file_name = "resume_" . $_SESSION['student_registration'] . "_" . time() . "." . $file_ext;
             $upload_path = "../uploads/resumes/";
-            
-            // Create directory if it doesn't exist
             if (!file_exists($upload_path)) {
                 mkdir($upload_path, 0777, true);
             }
-            
             $resume_path = $upload_path . $new_file_name;
-            
             if (move_uploaded_file($file_tmp, $resume_path)) {
-                // Resume uploaded successfully
             } else {
                 $error .= "Failed to upload resume. Please try again.<br>";
             }
@@ -92,7 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // If no errors, update profile
     if (empty($error)) {
-        // Debug the branch value and print data types        // Clean and validate branch data
         $branch = trim($_POST['branch']);
         if (empty($branch)) {
             $error .= "Branch cannot be empty.<br>";
@@ -111,27 +94,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         resume_path = ? 
                         WHERE id = ?";
         
-        // Debug the SQL and values before execution
         error_log("Branch value: '" . $branch . "', type: " . gettype($branch));
-        
         $stmt = $conn->prepare($update_query);
-        // Fix: Use proper type bindings - ensuring branch is treated as a string
         $stmt->bind_param("sisssssdddss", $dob, $age, $hometown, $college, $degree, $branch, $semester, $cgpa, $marks_12th, $marks_10th, $resume_path, $student_id);
           $success = $stmt->execute();
         error_log("SQL execution result: " . ($success ? "Success" : "Failed with error: " . $stmt->error));
         
         if ($success) {
-            // Profile updated successfully, redirect to dashboard
             error_log("Redirecting to dashboard.php");
-            // Update session variable if needed
             $_SESSION['student_name'] = $student['name'] ?? $_SESSION['student_name'];
-            
-            // Make sure to end any output buffering
             if (ob_get_level()) {
                 ob_end_clean();
             }
-            
-            // Redirect to dashboard
             header("Location: dashboard.php");
             exit();
         } else {
@@ -153,7 +127,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">VIT Placement Portal</a>
@@ -327,14 +300,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
@@ -343,9 +313,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     (function() {
         'use strict';
         window.addEventListener('load', function() {
-            // Fetch all forms we want to apply validation to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
@@ -355,8 +323,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     form.classList.add('was-validated');
                 }, false);
             });
-            
-            // Calculate age automatically based on DOB
             var dobInput = document.getElementById('dob');
             var ageInput = document.getElementById('age');
             
