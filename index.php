@@ -1,5 +1,4 @@
 <?php
-// Enable error reporting
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -17,7 +16,6 @@ require_once 'includes/config.php';
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="index.php">placeVIT</a>
@@ -38,7 +36,7 @@ require_once 'includes/config.php';
                 </ul>
             </div>
         </div>
-    </nav>    <!-- Hero Section -->
+    </nav>   
     <div class="jumbotron bg-light-blue">
         <div class="container">
             <div class="row align-items-center" style="min-height: 500px; padding: 40px 0;">
@@ -57,7 +55,7 @@ require_once 'includes/config.php';
                 </div>
             </div>
         </div>
-    </div>    <!-- Features Section -->
+    </div>   
     <section>
         <div class="container">
             <h2 class="text-center">Key Features</h2>
@@ -117,14 +115,11 @@ require_once 'includes/config.php';
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
