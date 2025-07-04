@@ -15,10 +15,7 @@ if (isset($_POST['update_status']) && isset($_POST['application_ids']) && isset(
     $new_status = mysqli_real_escape_string($conn, $_POST['new_status']);
     
     if (!empty($application_ids)) {
-        // Convert array of IDs to comma-separated string for the query
         $ids_string = implode(',', array_map('intval', $application_ids));
-        
-        // Update only applications for jobs posted by this CDC staff
         $update_query = "UPDATE applications SET status = ? 
                         WHERE id IN ($ids_string) 
                         AND job_id IN (SELECT id FROM job_opportunities WHERE posted_by = ?)";
@@ -35,12 +32,10 @@ if (isset($_POST['update_status']) && isset($_POST['application_ids']) && isset(
     }
 }
 
-// Get filter parameters
+// Build the query based on filters
 $job_filter = isset($_GET['job_id']) ? intval($_GET['job_id']) : null;
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($conn, $_GET['status']) : null;
 $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : null;
-
-// Build the query based on filters
 $query = "SELECT a.*, s.name as student_name, s.registration_number, s.email as student_email, 
           s.cgpa, j.company_name, j.role
           FROM applications a 
@@ -75,10 +70,7 @@ if ($search) {
     $types .= "sssss";
 }
 
-// Order by
 $query .= " ORDER BY a.applied_at DESC";
-
-// Prepare and execute the query
 $stmt = $conn->prepare($query);
 $stmt->bind_param($types, ...$params);
 $stmt->execute();
@@ -103,7 +95,6 @@ $jobs_result = $stmt->get_result();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -303,20 +294,16 @@ $jobs_result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Select all checkbox functionality
             $('#selectAll').change(function() {
                 $('.application-checkbox').prop('checked', $(this).prop('checked'));
             });
