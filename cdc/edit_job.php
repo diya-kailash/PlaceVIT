@@ -25,8 +25,6 @@ $stmt = $conn->prepare($job_query);
 $stmt->bind_param("ii", $job_id, $cdc_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
-// If job not found or doesn't belong to this CDC staff
 if ($result->num_rows == 0) {
     header("Location: job_opportunities.php");
     exit();
@@ -36,18 +34,14 @@ $job = $result->fetch_assoc();
 
 // Handle form submission for updating job
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate and sanitize input
     $company_name = mysqli_real_escape_string($conn, $_POST['company_name']);
     $role = mysqli_real_escape_string($conn, $_POST['role']);
     $ctc = mysqli_real_escape_string($conn, $_POST['ctc']);
     $deadline = mysqli_real_escape_string($conn, $_POST['deadline']);
-    
-    // Validate required fields
     if (empty($company_name) || empty($role) || empty($ctc) || empty($deadline)) {
         $error = "All fields are required.";
     } else {
-        // Handle job description file upload (if new file provided)
-        $jd_path = $job['job_description_path']; // Keep existing path by default
+        $jd_path = $job['job_description_path']; 
         
         if (isset($_FILES['job_description']) && $_FILES['job_description']['error'] == 0) {
             $allowed_ext = ['pdf', 'doc', 'docx'];
@@ -58,13 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (!in_array($file_ext, $allowed_ext)) {
                 $error = "Job description must be in PDF, DOC, or DOCX format.";
-            } elseif ($file_size > 5242880) { // 5MB max
+            } elseif ($file_size > 5242880) { 
                 $error = "Job description file size must be less than 5MB.";
             } else {
                 $new_file_name = "jd_" . preg_replace('/\s+/', '', $company_name) . "" . time() . "." . $file_ext;
                 $upload_path = "../uploads/job_descriptions/";
-                
-                // Create directory if it doesn't exist
                 if (!file_exists($upload_path)) {
                     mkdir($upload_path, 0777, true);
                 }
@@ -72,7 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $new_jd_path = $upload_path . $new_file_name;
                 
                 if (move_uploaded_file($file_tmp, $new_jd_path)) {
-                    // Delete old file if exists
                     if (!empty($jd_path) && file_exists($jd_path) && $jd_path != $new_jd_path) {
                         unlink($jd_path);
                     }
@@ -126,7 +117,6 @@ $deadline_formatted = date('Y-m-d\TH:i', strtotime($job['deadline']));
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -241,14 +231,11 @@ $deadline_formatted = date('Y-m-d\TH:i', strtotime($job['deadline']));
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
@@ -257,9 +244,7 @@ $deadline_formatted = date('Y-m-d\TH:i', strtotime($job['deadline']));
     (function() {
         'use strict';
         window.addEventListener('load', function() {
-            // Fetch all forms we want to apply validation to
             var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
             Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {

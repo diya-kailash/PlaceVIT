@@ -12,8 +12,6 @@ $cdc_id = $_SESSION['cdc_id'];
 // Delete job opportunity if requested
 if (isset($_POST['delete_job']) && isset($_POST['job_id'])) {
     $job_id = intval($_POST['job_id']);
-    
-    // Check if the job belongs to the current CDC staff
     $check_query = "SELECT * FROM job_opportunities WHERE id = ? AND posted_by = ?";
     $stmt = $conn->prepare($check_query);
     $stmt->bind_param("ii", $job_id, $cdc_id);
@@ -36,7 +34,6 @@ if (isset($_POST['delete_job']) && isset($_POST['job_id'])) {
         $stmt->bind_param("i", $job_id);
         
         if ($stmt->execute()) {
-            // Delete related file if exists
             if (!empty($jd_path) && file_exists($jd_path)) {
                 unlink($jd_path);
             }
@@ -69,7 +66,6 @@ $jobs_result = $stmt->get_result();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">placeVIT</a>
@@ -203,7 +199,6 @@ $jobs_result = $stmt->get_result();
     </div>
 
     <?php 
-    // Reset the results pointer to beginning
     $jobs_result->data_seek(0);
     while ($job = $jobs_result->fetch_assoc()): 
     ?>
@@ -232,15 +227,12 @@ $jobs_result = $stmt->get_result();
         </div>
     </div>
     <?php endwhile; ?>
-
-    <!-- Footer -->    
+   
     <footer class="footer">
         <div class="container text-center">
             <p>&copy; <?php echo date("Y"); ?> VIT Placement Portal. All Rights Reserved.</p>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
